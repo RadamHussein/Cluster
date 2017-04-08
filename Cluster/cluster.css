@@ -1,0 +1,36 @@
+body {
+	padding: 0px;
+	margin: 0px;
+}
+
+#title-bar {
+	display: flex;
+	background-color: #29B6F6;
+	margin-left: 0px;
+	margin-right: 0px;
+	width: 100%;
+	height: 100px;
+	align-items: center;
+}
+
+img {
+	height: 80px;
+	width: 80px;
+	margin-left: 25px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#title {
+	display: inline;
+	margin-left: 10px;
+	font-size: 40px;
+}
+
+#list-wrapper {
+	margin-left: 25px;
+}
+
+a:link {
+	text-decoration: none;
+}
