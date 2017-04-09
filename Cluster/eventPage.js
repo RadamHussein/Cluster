@@ -41,6 +41,7 @@ var list = new SinglyList();
 document.addEventListener('DOMContentLoaded', function(){
 	//send a message to the popup page indicating that it can now send its data back in a response
 	chrome.runtime.sendMessage({message: 'ok'}, function(response){
+		console.log(response);
 		chrome.storage.sync.get(null, function(contents){
 			//console.log(contents);
 			if(contents.head === 'undefined'){
@@ -53,15 +54,6 @@ document.addEventListener('DOMContentLoaded', function(){
 			else{
 				console.log("Storage contains data");
 				console.log(contents.LinkedList)
-				/*
-				var existingList = convertStorageToList(contents.LinkedList);
-				console.log(existingList);
-				displayList(existingList);
-				existingList.add(response.response);
-				console.log("Existing list now contains " + existingList);
-				addItemToPage(response.response);
-				saveList(existingList);
-				*/
 				convertStorageToList(contents.LinkedList);
 				console.log(list);
 				displayList(list);
@@ -72,13 +64,15 @@ document.addEventListener('DOMContentLoaded', function(){
 			}
 		})
 	})
-/*
 	var deleteAll = document.getElementById('delete');
 	deleteAll.addEventListener("click", function(){
 		console.log("clear storage");
-	}
-*/
+		clearStorage();
+	});
 });
+
+
+	
 
 
 //listen for additional messages from the popup page
@@ -96,18 +90,27 @@ This function adds an item to the DOM
 function addItemToPage(url){
 	//create list item
 	var listItem = document.createElement("li");
+	var image = document.createElement("img");
 	var link = document.createElement("a");
-	var textContent = document.createTextNode(url);
+	var textContent = document.createTextNode(url.title);
+
+	//add a src attribute to the <img> tag
+	image.setAttribute("src", url.favicon);
+
+	//add a class attribute to the <img> tag
+	image.setAttribute("class", "favicon");
 
 	//add an href to the <a> tag
 	var attribute = document.createAttribute("href");
-	attribute.value = url;
+	attribute.value = url.url;
 	link.setAttributeNode(attribute);
 
 	//add a target to the <a> tag (open page in new tab)
 	attribute = document.createAttribute("target");
 	attribute.value = "_blank";
 	link.setAttributeNode(attribute);
+
+	listItem.appendChild(image);
 
 	//append new list item to document
 	link.appendChild(textContent);

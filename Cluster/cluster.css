@@ -1,6 +1,7 @@
 body {
 	padding: 0px;
 	margin: 0px;
+	font-family: 'Roboto', sans-serif;
 }
 
 #title-bar {
@@ -25,12 +26,58 @@ img {
 	display: inline;
 	margin-left: 10px;
 	font-size: 40px;
+	font-weight: 300;
+}
+
+h1 {
+	font-size: 30px;
+	display: inline-block;
 }
 
 #list-wrapper {
 	margin-left: 25px;
 }
 
+li {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	font-size: 12px;
+}
+
+a {
+	font-weight: 400;
+}
+
 a:link {
 	text-decoration: none;
+	cursor: pointer;
+	transition-property: all;
+	transition-duration: 0.3s;
+	transition-timing-function: initial;
+	transition-delay: initial;
+}
+
+a:hover {
+	color: blue;
+}
+
+.favicon {
+	width: 16px;
+	height: 16px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-right: 5px;
+}
+
+span {
+	margin-left: 20px;
+	cursor: pointer;
+	transition-property: all;
+	transition-duration: 0.3s;
+	transition-timing-function: initial;
+	transition-delay: initial;
+}
+
+span:hover {
+	color: blue;
 }
