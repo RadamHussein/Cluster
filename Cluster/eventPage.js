@@ -67,7 +67,9 @@ document.addEventListener('DOMContentLoaded', function(){
 	var deleteAll = document.getElementById('delete');
 	deleteAll.addEventListener("click", function(){
 		console.log("clear storage");
+		clearList(list);
 		clearStorage();
+		resetList();
 	});
 });
 
@@ -92,6 +94,8 @@ function addItemToPage(url){
 	var listItem = document.createElement("li");
 	var image = document.createElement("img");
 	var link = document.createElement("a");
+	var clear = document.createElement("img");
+	var clearContent = document.createTextNode(clear);
 	var textContent = document.createTextNode(url.title);
 
 	//add a src attribute to the <img> tag
@@ -99,6 +103,13 @@ function addItemToPage(url){
 
 	//add a class attribute to the <img> tag
 	image.setAttribute("class", "favicon");
+
+	//add class to the <i> tag
+	clear.setAttribute("class", "clear");
+	clear.appendChild(clearContent);
+
+	clear.setAttribute("src", "Clear.svg")
+	clear.appendChild(clearContent);
 
 	//add an href to the <a> tag
 	var attribute = document.createAttribute("href");
@@ -109,12 +120,14 @@ function addItemToPage(url){
 	attribute = document.createAttribute("target");
 	attribute.value = "_blank";
 	link.setAttributeNode(attribute);
-
+	
+	listItem.appendChild(clear);
 	listItem.appendChild(image);
 
 	//append new list item to document
 	link.appendChild(textContent);
 	listItem.appendChild(link);
+	//listItem.appendChild(clear);
 	document.getElementById("tabs-list").appendChild(listItem);
 }
 
@@ -156,6 +169,14 @@ function convertStorageToList(storageContents){
 	//return list;
 }
 
+//this function clears the list so that a new one can be built after a change
+function resetList(){
+	var newTableBody = document.createElement("ul");
+	var oldTableBody = document.getElementById("tabs-list");
+	oldTableBody.parentNode.replaceChild(newTableBody, oldTableBody);
+	newTableBody.id = "tabs-list";
+}
+
 /*
 function isStorageEmpty(){
 		chrome.storage.sync.get(null, function(contents){
@@ -179,36 +200,12 @@ function saveList(list){
     });
 }
 
-/*
-function getList(){
-	chrome.storage.sync.get(null, function(contents){
-		console.log(contents);
-		return contents
-	});
-};
-
-//checks if storage is empty (needed on first run of extension or after user has deleted all saved data)
-function checkStorageContents(){
-	chrome.storage.sync.get(null, function(items){
-		console.log(items.tabsArray);
-		if (typeof items.tabsArray == 'undefined'){
-			console.log("items is empty")
-		}
-		else{
-			console.log("items is not empty")
-		}
-	})
+//clear out the data structure used to hold the list
+function clearList(list){
+	for (var member in list){
+		delete list[member];
+	}
 }
-
-//not working
-function fetchData(){
-	console.log("Hello from fetchData")
-	var items = {};
-	chrome.storage.sync.get(null, function(items){
-		console.log(items) 
-	})
-}
-*/
 
 //clear extension storage
 function clearStorage(){
