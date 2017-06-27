@@ -127,6 +127,14 @@ document.addEventListener('DOMContentLoaded', function(){
 	else {
 		console.log("Page was refreshed...");
 	}
+
+	var deleteAll = document.getElementById('delete');
+	deleteAll.addEventListener("click", function(){
+		//console.log("clear storage");
+		clearList(list);
+		clearStorage();
+		resetList();
+	});
 });
 
 //load contents of storage onto the page when background tab is opened or refreshed without adding new items
