@@ -110,30 +110,23 @@ document.addEventListener('DOMContentLoaded', function(){
 
 	loadStorageContents();
 
-	chrome.runtime.sendMessage({message: 'ok'}, function(response){
-		var reply = response.response;
-		if (typeof(response.response) != "undefined"){
-			console.log("Callback called and logs a response of " + response);
-			list.add(response.response);
-			for (i = 0; i < response.response.length; i++){
-				console.log("List item: ", response.response[i]);
-				list.add(response.response[i]);
-				addItemToPage(response.response[i]);
-			}
-			saveList(list);
-		}
-		else{
-			console.log("doing nothing");
-		}
-	});
-
-	var deleteAll = document.getElementById('delete');
-	deleteAll.addEventListener("click", function(){
-		//console.log("clear storage");
-		clearList(list);
-		clearStorage();
-		resetList();
-	});
+	//if page was not refreshed (is loaded with the new tab) send an "ok" the popup requesting the data
+	if (performance.navigation.type != 1){
+		console.log("Page was not refreshed...");
+		chrome.runtime.sendMessage({message: 'ok'}, function(response){
+				console.log("Callback called and logs a response of " + JSON.stringify(response[0]));
+				//list.add(response);
+				for (var i = 0; i < response.length; i++){
+					console.log("List item: ", response[i]);
+					list.add(response[i]);
+					addItemToPage(response[i]);
+				}
+				saveList(list);
+		});
+	}
+	else {
+		console.log("Page was refreshed...");
+	}
 });
 
 //load contents of storage onto the page when background tab is opened or refreshed without adding new items
@@ -160,9 +153,12 @@ function loadStorageContents(){
 //listen for additional messages from the popup page
 chrome.runtime.onMessage.addListener(function(message, sender, sendRes) {
 	//saveChanges(message.message)	//save the entry (uncomment later)
-	console.log(message.message.length);
+	var messageLength = message.message.length;
+	//console.log(message.message.length);
+	console.log(messageLength);
 	console.log(message.message);
-	for (i = 0; i < message.message.length; i++){
+	console.log(message.message[0]);
+	for (var i = 0; i < messageLength; i++){
 		if(message.message[i].url != "chrome-extension://eknbadmpplffmkpecahajcjeencbieod/background.html"){
 			list.add(message.message[i]);
 			addItemToPage(message.message[i]);

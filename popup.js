@@ -13,20 +13,9 @@ function getCurrentTabUrl(callback) {
   };
 
   chrome.tabs.query(queryInfo, function(tabs) {
-    // chrome.tabs.query invokes the callback with a list of tabs that match the
-    // query. When the popup is opened, there is certainly a window and at least
-    // one tab, so we can safely assume that |tabs| is a non-empty array.
-    // A window can only have one active tab at a time, so the array consists of
-    // exactly one tab.
     //var tab = tabs[0];
     console.log(tabs);
     var url = tabs;
-
-    // tab.url is only available if the "activeTab" permission is declared.
-    // If you want to see the URL of other tabs (e.g. after removing active:true
-    // from |queryInfo|), then the "tabs" permission is required to see their
-    // "url" properties.
-    //console.assert(typeof url.url == 'string', 'tab.url should be a string');
 
     callback(url);
   });
@@ -98,12 +87,7 @@ function openBackgroundPage(){
 
 //package, close and send tab group to background
 function saveAndCloseAllTabs(){
-  console.log("Close all tabs");
   getAllTabUrls(function(allTabsInWindow){
-    //console.log(allTabsInWindow);
-    //console.log(allTabsInWindow.length);
-    //console.log(allTabsInWindow[0].title);
-
     var backgroundTabIsOpen = false;
     var allOpenTabsArr = [];
 
@@ -132,15 +116,20 @@ function saveAndCloseAllTabs(){
         selected: false
       }
 
+      console.log("opening background tab...");
       //open the background tab
       chrome.tabs.create(newTab);
 
       //get message from background when page is ready
-      chrome.runtime.onMessage.addListener(function(message, sender, sendRes) {
-          sendRes({response: allOpenTabsArr})
+      chrome.runtime.onMessage.addListener(function(message, sender, sendRes){
+        console.log(message);
+        console.log("Sending all tabs to background...");
+        //sendRes({response: allOpenTabsArr});
+        sendRes(allOpenTabsArr);
       });
     }
     else{
+      console.log("else...");
       chrome.runtime.sendMessage({message: allOpenTabsArr}, function(response){
         console.log("response: " + response.response);
       })
@@ -169,8 +158,9 @@ function handleUserAction(){
         tabData.push(copyTabDataForSending(url[i]));
       }
 
+    //*****UNCOMMENT WHEN THINGS ARE FINISHED*****//
     //close the captured tab
-    chrome.tabs.remove(url[0].id);
+    //chrome.tabs.remove(url[0].id);
 
     //configure new tab
     var newTab = {
@@ -184,31 +174,20 @@ function handleUserAction(){
       //if no open page found, open it
       if (openBackgroundTab == false){
         chrome.tabs.create(newTab);
-        //get message from background when page is ready
-        /*
-        chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-            sendResponse({response: tabData});
-            return true;
+        chrome.runtime.onMessage.addListener(function(message, sender, sendRes){
+          console.log(message);
+          sendRes(tabData);
         });
-        */
       }
-      else {
-        //setTimeout(sendMessage, 5000);
-        //sendMessage(tabData);
-        //background page is already open
-        chrome.runtime.sendMessage({message: tabData}, function(response){
-          console.log("response: " + response.response);
-        })
-      }
-    })
-  });
+        sendMessage(tabData);
+      })
+    });
   })
 };
 
-/*
 function sendMessage(data){
+  console.log("Sending data to background...");
   chrome.runtime.sendMessage({message: data}, function(response){
     console.log("response: " + response.response);
   })
 }
-*/
