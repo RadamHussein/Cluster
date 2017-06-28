@@ -105,8 +105,6 @@ SinglyList.prototype.remove = function(value) {
 var list = new SinglyList();
 
 document.addEventListener('DOMContentLoaded', function(){
-	//create the list
-	//var list = new SinglyList();
 
 	loadStorageContents();
 
@@ -115,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function(){
 		console.log("Page was not refreshed...");
 		chrome.runtime.sendMessage({message: 'ok'}, function(response){
 				console.log("Callback called and logs a response of " + JSON.stringify(response[0]));
-				//list.add(response);
 				for (var i = 0; i < response.length; i++){
 					console.log("List item: ", response[i]);
 					list.add(response[i]);
@@ -128,9 +125,9 @@ document.addEventListener('DOMContentLoaded', function(){
 		console.log("Page was refreshed...");
 	}
 
+	//"clear all" button
 	var deleteAll = document.getElementById('delete');
 	deleteAll.addEventListener("click", function(){
-		//console.log("clear storage");
 		clearList(list);
 		clearStorage();
 		resetList();
@@ -190,6 +187,10 @@ function addItemToPage(url){
 	var clearContent = document.createTextNode(clear);
 	var textContent = document.createTextNode(url.title);
 
+	//new element for style REMOVE IF SUCKS
+	var styleDiv = document.createElement("div");
+	styleDiv.setAttribute("class", "wave");
+
 	//add a src attribute to the <img> tag
 	image.setAttribute("src", url.favIconUrl);
 	//image.setAttribute("src", url.favicon);
@@ -222,7 +223,7 @@ function addItemToPage(url){
 	//append new list item to document
 	link.appendChild(textContent);
 	listItem.appendChild(link);
-	//listItem.appendChild(clear);
+	listItem.appendChild(styleDiv); //delet this too for styleDiv
 	document.getElementById("tabs-list").appendChild(listItem);
 }
 

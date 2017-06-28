@@ -33,6 +33,13 @@ img {
 	/*font-weight: 300;*/
 }
 
+.list-header {
+	width: 1044px;
+	border: 2px solid black;
+	border-radius: 5px;
+	margin-top: 10px;
+}
+
 h1 {
 	margin-left: 39px;
 	font-size: 30px;
@@ -41,11 +48,22 @@ h1 {
 }
 
 #list-wrapper {
-	margin-left: 50px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 ul {
-	max-width: 900px;
+	position: relative;
+	width: 995px;
+	max-height: 65vh;
+	overflow: hidden;
+	overflow-y: scroll;
+	padding-right: 50px;
+	border: 2px solid black;
+	border-radius: 5px;
 }
 
 #tabs-list {
@@ -54,36 +72,73 @@ ul {
 }
 
 li {
-	margin-top: 15px;
-	margin-bottom: 15px;
+	margin-left: 50px;
+	position: relative;
+	height: 30px;
 	font-size: 14px;
 	transition: all 0.2s linear;
+	/*border-bottom: 1px solid #eee;*/
 }
 
 a {
-	font-weight: 400;
-	text-decoration: none;
-	cursor: pointer;
-	transition-property: all;
-	transition-duration: 0.2s;
-	transition-timing-function: initial;
-	transition-delay: initial;
-	color: #2196F3;
+	display: inline;
+	position: relative;
+	bottom: 5px;
+	max-width: 900px;
+	height:30px;
+	background-color: white;
+	color: black;
+	text-decoration:none;
+	text-align:center;
+	vertical-align:middle;
 }
 
-a:hover {
-	color: #FFC107;
+.wave {
+	position: absolute;
+	width: 945px;
+	height:30px;
+	/*background-color: #9E9E9E;*/
+	border-bottom: 2px solid #76FF03;
+	top: 0;
+	left: 0;
+	border-radius: 5px;
+	transform: scale(0);
+	opacity: 0.5;
+}
+
+li:hover > .wave {
+	animation: ripple 1s;
+}
+
+@keyframes ripple {
+		0% {
+			transform: scaleX(0);
+			bottom: 10px;
+		}
+		20% {
+			transform: scaleX(1);
+			opacity: 0.3;
+			bottom: 10px;
+		}
+		100% {
+			transform: scaleX(1);
+			opacity: 0.8;
+			bottom: 10px;
+		}
 }
 
 .favicon {
+	position: relative;
+	/*top: 5px;*/
 	width: 18px;
 	height: 18px;
-	margin-top: 0px;
 	margin-bottom: 0px;
 	margin-right: 10px;
 }
 
 .clear {
+	position: relative;
+	/*top: 5px;*/
 	width: 14px;
 	height: 14px;
 	cursor: pointer;
@@ -101,10 +156,10 @@ li:hover > .clear {
 	opacity: 1.0;
 }
 
-/*li:hover {
+li:hover {
   text-decoration: none;
   transform: scale(1.1);
-}*/
+}
 
 span {
 	color: #2196F3;
