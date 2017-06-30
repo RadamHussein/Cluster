@@ -40,7 +40,7 @@ img {
 	position: relative;
 	height: calc(100% - 100px);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
@@ -68,6 +68,8 @@ ul {
 	padding-right: 50px;
 	border: 2px solid black;
 	border-radius: 5px;
+	margin-bottom: 0px;
+	margin-top: 0px;
 }
 
 #tabs-list {
@@ -81,27 +83,31 @@ li {
 	height: 30px;
 	font-size: 14px;
 	transition: all 0.2s linear;
-	/*border-bottom: 1px solid #eee;*/
 }
 
 a {
-	display: inline;
 	position: relative;
-	bottom: 5px;
+	bottom: 8px;
 	max-width: 900px;
-	height:30px;
-	background-color: white;
 	color: black;
 	text-decoration:none;
 	text-align:center;
 	vertical-align:middle;
 }
 
+li:hover a {
+	background-color: #eee;
+}
+
+li:hover {
+	background-color: #eee;
+}
+
+/*
 .wave {
 	position: absolute;
 	width: 945px;
 	height:30px;
-	/*background-color: #9E9E9E;*/
 	border-bottom: 2px solid #76FF03;
 	top: 0;
 	left: 0;
@@ -109,7 +115,13 @@ a {
 	transform: scale(0);
 	opacity: 0.5;
 }
+*/
 
+/*li:hover > a{
+	background-color: #eee;
+}*/
+
+/*
 li:hover > .wave {
 	animation: ripple 1s;
 }
@@ -130,25 +142,26 @@ li:hover > .wave {
 			bottom: 10px;
 		}
 }
+*/
 
 .favicon {
 	position: relative;
-	/*top: 5px;*/
 	width: 18px;
 	height: 18px;
 	margin-bottom: 0px;
 	margin-right: 10px;
+	bottom: 3px;
 }
 
 .clear {
 	position: relative;
-	/*top: 5px;*/
-	width: 14px;
-	height: 14px;
+	width: 12px;
+	height: 12px;
 	cursor: pointer;
 	margin-top: 0px;
 	margin-bottom: 0px;
 	margin-left: 0px;
+	bottom: 5px;
 	opacity: 0.0;
 	transition-property: all;
 	transition-duration: 0.2s;

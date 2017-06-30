@@ -188,12 +188,11 @@ function addItemToPage(url){
 	var textContent = document.createTextNode(url.title);
 
 	//new element for style REMOVE IF SUCKS
-	var styleDiv = document.createElement("div");
-	styleDiv.setAttribute("class", "wave");
+	//var styleDiv = document.createElement("div");
+	//styleDiv.setAttribute("class", "wave");
 
 	//add a src attribute to the <img> tag
 	image.setAttribute("src", url.favIconUrl);
-	//image.setAttribute("src", url.favicon);
 
 	//add a class attribute to the <img> tag
 	image.setAttribute("class", "favicon");
@@ -223,7 +222,7 @@ function addItemToPage(url){
 	//append new list item to document
 	link.appendChild(textContent);
 	listItem.appendChild(link);
-	listItem.appendChild(styleDiv); //delet this too for styleDiv
+	//listItem.appendChild(styleDiv); //delet this too for styleDiv
 	document.getElementById("tabs-list").appendChild(listItem);
 }
 
