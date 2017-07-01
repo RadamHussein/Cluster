@@ -10,6 +10,7 @@ body {
 }
 
 #title-bar {
+	display: flex;
 	background: linear-gradient(90deg, black, white);
 	margin-left: 0px;
 	margin-right: 0px;
@@ -47,13 +48,36 @@ img {
 }
 
 .list-header {
+	position: relative;
 	width: 1044px;
 	border: 2px solid black;
 	border-radius: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-top: 10px;
 }
 
-h1 {
-	margin-left: 39px;
+span {
+	position: relative;
+	float: right;
+	right: 5%;
+	margin-top: 31px;
+	color: #76FF03;
+	font-size: 14px;
+	cursor: pointer;
+	transition-property: all;
+	transition-duration: 0.3s;
+	transition-timing-function: initial;
+	transition-delay: initial;
+}
+
+span:hover {
+	color: red;
+}
+
+#list-title {
+	position: relative;
+	left: 5%;
 	font-size: 30px;
 	font-weight: 400;
 	display: inline-block;
@@ -68,8 +92,7 @@ ul {
 	padding-right: 50px;
 	border: 2px solid black;
 	border-radius: 5px;
-	margin-bottom: 0px;
-	margin-top: 0px;
+	margin: 10px;
 }
 
 #tabs-list {
@@ -88,11 +111,13 @@ li {
 a {
 	position: relative;
 	bottom: 8px;
-	max-width: 900px;
+	/*max-width: 900px;*/
+	width: 100%;
 	color: black;
 	text-decoration:none;
-	text-align:center;
-	vertical-align:middle;
+	text-align: center;
+	vertical-align: middle;
+	cursor: default;
 }
 
 li:hover a {
@@ -102,47 +127,6 @@ li:hover a {
 li:hover {
 	background-color: #eee;
 }
-
-/*
-.wave {
-	position: absolute;
-	width: 945px;
-	height:30px;
-	border-bottom: 2px solid #76FF03;
-	top: 0;
-	left: 0;
-	border-radius: 5px;
-	transform: scale(0);
-	opacity: 0.5;
-}
-*/
-
-/*li:hover > a{
-	background-color: #eee;
-}*/
-
-/*
-li:hover > .wave {
-	animation: ripple 1s;
-}
-
-@keyframes ripple {
-		0% {
-			transform: scaleX(0);
-			bottom: 10px;
-		}
-		20% {
-			transform: scaleX(1);
-			opacity: 0.3;
-			bottom: 10px;
-		}
-		100% {
-			transform: scaleX(1);
-			opacity: 0.8;
-			bottom: 10px;
-		}
-}
-*/
 
 .favicon {
 	position: relative;
@@ -162,6 +146,7 @@ li:hover > .wave {
 	margin-bottom: 0px;
 	margin-left: 0px;
 	bottom: 5px;
+	left: 10px;
 	opacity: 0.0;
 	transition-property: all;
 	transition-duration: 0.2s;
@@ -178,16 +163,26 @@ li:hover {
   transform: scale(1.1);
 }
 
-span {
-	color: #2196F3;
-	margin-left: 20px;
-	cursor: pointer;
-	transition-property: all;
-	transition-duration: 0.3s;
-	transition-timing-function: initial;
-	transition-delay: initial;
+
+
+/* Let's get this party started */
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-span:hover {
-	color: #FFC107;
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+		/*background-clip: content-box;*/
+		/*background-color: lime;*/
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb:vertical {
+    background: black;
+    -webkit-box-shadow: inset 10 10 6px rgba(0,0,0,0.5);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+	background: black;
 }

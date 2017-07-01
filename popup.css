@@ -26,7 +26,7 @@ span {
     /*border: none;*/
     letter-spacing: 2px;
     font-weight: 400;
-    color: white;
+    /*color: white;*/
     padding: 5px 5px;
     text-align: center;
     text-decoration: none;
@@ -42,31 +42,36 @@ span {
 }
 
 #one-tab {
-	background-color: #008CBA;
-	border: 2px solid #008CBA;
+	background-color: white;
+	border: 2px solid black;
+	color: black;
+	/*box-shadow: inset 0 0 2px black;*/
 }
 
 #one-tab:hover {
-	background-color: white;
-	color: black;
+	background-color: black;
+	color: white;
 }
 
 #all-tabs {
-	background-color: #f44336;
-	border: 2px solid #f44336;
+	background-color: lime;
+	border: 2px solid black;
+	color black;
 }
 
 #all-tabs:hover {
 	background-color: white;
-	color: black;
+	border-color: lime;
 }
 
 #open-page {
-	background-color: #FFEB3B;
-	border: 2px solid #FFEB3B;
+	background-color: black;
+	border: 2px solid black;
+	color: white;
 }
 
 #open-page:hover {
 	background-color: white;
 	color: black;
+	/*box-shadow: inset 0 0 2px black;*/
 }
