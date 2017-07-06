@@ -30,48 +30,46 @@ span {
     padding: 5px 5px;
     text-align: center;
     text-decoration: none;
-    transition-duration: 0.2s;
+    /*transition-duration: 0.2s;*/
     display: block;
     float: center;
-    margin: 2px;
+    margin: 5px;
     width: 100%;
+		transition: all 0.2s ease;
 }
 
 .button:focus {
 	outline: 0;
 }
 
+.button:hover {
+	box-shadow: 2px 2px 0px white, 4px 4px 0px black;
+	transform: translateX(-4px) translateY(-4px);
+}
+
+.button:active {
+	border: 2px solid;
+	box-shadow: 0px 0px 0px white, 0px 0px 0px black;
+	transform: translateX(5px) translateY(5px);
+}
+
 #one-tab {
+	position: relative;
 	background-color: white;
 	border: 2px solid black;
 	color: black;
-	/*box-shadow: inset 0 0 2px black;*/
-}
-
-#one-tab:hover {
-	background-color: black;
-	color: white;
 }
 
 #all-tabs {
+	position: relative;
 	background-color: lime;
 	border: 2px solid black;
 	color black;
 }
 
-#all-tabs:hover {
-	background-color: white;
-	border-color: lime;
-}
-
 #open-page {
+	position: relative;
 	background-color: black;
 	border: 2px solid black;
 	color: white;
-}
-
-#open-page:hover {
-	background-color: white;
-	color: black;
-	/*box-shadow: inset 0 0 2px black;*/
 }

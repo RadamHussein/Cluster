@@ -222,7 +222,6 @@ function addItemToPage(url){
 	//append new list item to document
 	link.appendChild(textContent);
 	listItem.appendChild(link);
-	//listItem.appendChild(styleDiv); //delet this too for styleDiv
 	document.getElementById("tabs-list").appendChild(listItem);
 }
 
@@ -305,20 +304,43 @@ function clearList(list){
 function deleteItem(){
 	//console.log("DELETE " + this);
 	var li = this.parentNode;
+
+	li.setAttribute("class", "delete-animation");
+
+	setTimeout(function(){ handleDelete(li) }, 600);
+	//setTimeout(function(){ handleDelete(li) }, 1000);
+
+}
+
+//testing this function with deleteItem for delete animation
+function handleDelete(li){
+
 	//console.log(li);
 	var lastChild = li.lastElementChild;
 	//console.log(lastChild);
 	var url = lastChild.getAttribute("href");
 	//console.log(url);
 
+	//remove li from the DOM
+	var parent = document.getElementById("tabs-list");
+	parent.removeChild(li);
+
 	//console.log("List before delete: ");
-	//console.log(list);
+
+	//remove URL from the list
 	list.remove(url);
+	//clearStorage();
+	saveList();
+
 	//console.log("List after delete: " + JSON.stringify(list));
+
+	/* UNCOMMENT THIS!!
 	clearStorage();
 	saveList(list);
 	resetList();
 	displayList(list);
+	*/
+
 }
 
 //clear extension storage
