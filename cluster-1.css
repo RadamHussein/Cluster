@@ -34,13 +34,14 @@ img {
 	font-size: 40px;
 	color: black;
 	text-shadow: -1px 0px white, 0px 1px white, 1px 0px white, 0px -1px white;
-	/*font-weight: 300;*/
 }
 
 #list-wrapper {
-	/*position: relative;*/
 	height: calc(100% - 120px);
 	padding: 10px;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
 }
 
 .list-header {
@@ -63,15 +64,9 @@ span {
 	cursor: pointer;
 	padding: 5px;
 	transition: all 0.2s ease;
-	/*border: 1px solid black;
-	/*transition-property: all;
-	transition-duration: 0.3s;
-	transition-timing-function: initial;
-	transition-delay: initial;*/
 }
 
 span:hover {
-	/*animation: danger 0.3s linear infinite;*/
 	box-shadow: 2px 2px 0px white, 4px 4px 0px black;
 	transform: translateX(-4px) translateY(-4px);
 	background-color: #ff2626;
@@ -91,31 +86,6 @@ span:active {
 	}
 }
 
-/*Probably don't need this...*/
-@keyframes danger {
-	0% {
-		border: 2px solid #ff2626;
-		background-color: white;
-		color: #ff2626;
-	}
-	50% {
-		border: 2px solid #ff2626;
-		background-color: white;
-		color: #ff2626;
-	}
-	51% {
-		border: 2px solid #ff2626;
-		background-color: #ff2626;
-		color: white;
-	}
-	100% {
-		border: 2px solid #ff2626;
-		background-color: #ff2626;
-		color: white;
-	}
-}
-
-
 #list-title {
 	position: relative;
 	left: 5%;
@@ -125,9 +95,16 @@ span:active {
 	display: inline-block;
 }
 
+.defaultMessage {
+	color: #BDBDBD;
+	font-weight: 300;
+}
+
 ul {
+	list-style-type: none;
+	padding-left: 0px;
 	width: 995px;
-	max-height: 65vh;
+	height: 65vh;
 	overflow: hidden;
 	overflow-y: scroll;
 	padding-right: 50px;
@@ -138,9 +115,9 @@ ul {
 	/*margin-bottom: 10px;*/
 }
 
-#tabs-list {
-	list-style-type: none;
-	padding-left: 0px;
+.list {
+	text-align: center;
+	line-height: 60vh;
 }
 
 li {
@@ -175,7 +152,6 @@ li:hover {
 
 .favicon {
 	position: relative;
-	/*display: inline-block;*/
 	width: 18px;
 	height: 18px;
 	margin-bottom: 0px;
@@ -211,7 +187,6 @@ li:hover {
 
 .delete-animation {
 	animation: delete 0.6s linear;
-	/*animation: delete 1s linear;*/
 }
 
 .delete-animation > a {

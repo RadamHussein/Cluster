@@ -111,6 +111,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		console.log("Page was not refreshed...");
 		chrome.runtime.sendMessage({message: 'ok'}, function(response){
 				console.log("Callback called and logs a response of " + JSON.stringify(response[0]));
+				removeDefaultMessage();
 				for (var i = 0; i < response.length; i++){
 					//console.log("List item: ", response[i]);
 					list.add(response[i]);
@@ -131,6 +132,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		clearStorage();
 		resetList();
 		updateListTitle(0);
+		showDefaultMessage();
 	});
 });
 
@@ -142,8 +144,10 @@ function loadStorageContents(){
 		/*if(typeof(contents.head) == "undefined" && typeof(contents.LinkedList.head) == "undefined"){
 			console.log("storage contents empty");
 		}*/
-		if(contents.LinkedList.head == null){
+		//console.log("length: " + list.length);
+		if(contents.hasOwnProperty('LinkedList') == false || contents.LinkedList.length == 0){
 			console.log("storage contents empty");
+			showDefaultMessage();
 		}
 		else{
 			console.log("Storage contains data");
@@ -164,6 +168,11 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendRes) {
 	console.log(messageLength);
 	console.log(message.message);
 	console.log(message.message[0]);
+	console.log("List: " + JSON.stringify(list));
+	if(list.length == 0){
+		removeDefaultMessage();
+	}
+
 	for (var i = 0; i < messageLength; i++){
 		if(message.message[i].url != "chrome-extension://eknbadmpplffmkpecahajcjeencbieod/background.html"){
 			list.add(message.message[i]);
@@ -228,7 +237,6 @@ That list must be displayed first before adding any more items
 to it.
 */
 function displayList(list){
-	//console.log("inside displayList " + list);
 	addItemToPage(list.head.data);
 	if (list.head.next !== null){
 		var nextNode = list.head.next;
@@ -246,18 +254,14 @@ is called when there is an existing list in storage.
 This function must be called before displayList()
 */
 function convertStorageToList(storageContents){
-	//console.log("Inside convertStorage " + storageContents.head.data);
-	//var list = new SinglyList();
 	list.add(storageContents.head.data);
 	if (storageContents.head.next !== null){
-		//console.log("The expression has evaluated to NOT NULL")
 		var nextNode = storageContents.head.next;
 		while (nextNode !== null){
 			list.add(nextNode.data);
 			nextNode = nextNode.next;
 		}
 	}
-	//return list;
 }
 
 //this function clears the list so that a new one can be built after a change
@@ -299,6 +303,25 @@ function clearList(list){
 	list.length = 0;
 }
 
+//show a default message in the list when list is empty
+function showDefaultMessage(){
+	var defaultMessage = document.createElement('h2');
+	defaultMessage.setAttribute("class", "defaultMessage");
+	defaultMessage.textContent = "Save tabs to add items to the list";
+
+	document.getElementById("tabs-list").setAttribute("class", "list");
+
+	document.getElementById("tabs-list").appendChild(defaultMessage);
+}
+
+//remove default message from the list
+function removeDefaultMessage(){
+	var parent = document.getElementById("tabs-list");
+	var child = parent.lastElementChild;
+	parent.removeChild(child);
+	parent.removeAttribute("class");
+}
+
 //update tab count on the list header
 function updateListTitle(length){
 	var tabCount = document.getElementById('list-title');
@@ -332,6 +355,7 @@ function handleDelete(li){
 
 	if (list.length == 1){
 		clearList(list);
+		showDefaultMessage();
 	}
 	else {
 		//remove URL from the list
