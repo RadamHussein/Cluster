@@ -39,7 +39,8 @@ SinglyList.prototype.add = function(value) {
 
 SinglyList.prototype.remove = function(value) {
     var currentNode = this.head,
-        length = this._length,
+        //length = this._length,
+				length = this.length,
         count = 0,
         message = {failure: 'Failure: non-existent node in this list.'},
         beforeNodeToDelete = null,
@@ -53,7 +54,8 @@ SinglyList.prototype.remove = function(value) {
 				//if there is only one node in the list delete that one
 				if (length == 1){
 					currentNode.next = null;
-					this._length--;
+					//this._length--;
+					this.length--;
 				}
 				//there is more than one node
 				else{
@@ -76,7 +78,8 @@ SinglyList.prototype.remove = function(value) {
 						beforeNodeToDelete.next = null;
 						currentNode = null;
 						nodeToDelete = null;
-						this._length--;
+						//this._length--;
+						this.length--;
 						return;
 					}
 
@@ -85,7 +88,8 @@ SinglyList.prototype.remove = function(value) {
 				 		this.head = currentNode.next;
 				        deletedNode = currentNode;
 				        currentNode = null;
-				        this._length--;
+				        //this._length--;
+								this.length--;
 
 				        //return deletedNode;
 				 	}
@@ -94,7 +98,8 @@ SinglyList.prototype.remove = function(value) {
 				    deletedNode = nodeToDelete;
 				    nodeToDelete = null;
 				    currentNode = null;
-				    this._length--;
+				    //this._length--;
+						this.length--;
 
 				    //return deletedNode;
 					}
@@ -119,6 +124,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					addItemToPage(response[i]);
 				}
 				saveList(list);
+				updateListTitle(list.length);
 		});
 	}
 	else {
@@ -131,6 +137,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		clearList(list);
 		clearStorage();
 		resetList();
+		updateListTitle(0);
 	});
 });
 
@@ -138,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function(){
 function loadStorageContents(){
 	chrome.storage.sync.get(null, function(contents){
 		console.log(contents);
-		console.log(contents.LinkedList.head);
+		//console.log(contents.LinkedList.head);
 		/*if(typeof(contents.head) == "undefined" && typeof(contents.LinkedList.head) == "undefined"){
 			console.log("storage contents empty");
 		}*/
@@ -151,6 +158,7 @@ function loadStorageContents(){
 			convertStorageToList(contents.LinkedList);
 			console.log(list);
 			displayList(list);
+			updateListTitle(list.length);
 		}
 	})
 }
@@ -169,6 +177,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendRes) {
 			addItemToPage(message.message[i]);
 		}
 	}
+	updateListTitle(list.length);
 	//list.add(message.message);
 	//addItemToPage(message.message);
 	saveList(list);
@@ -186,10 +195,6 @@ function addItemToPage(url){
 	var clear = document.createElement("img");
 	var clearContent = document.createTextNode(clear);
 	var textContent = document.createTextNode(url.title);
-
-	//new element for style REMOVE IF SUCKS
-	//var styleDiv = document.createElement("div");
-	//styleDiv.setAttribute("class", "wave");
 
 	//add a src attribute to the <img> tag
 	image.setAttribute("src", url.favIconUrl);
@@ -301,6 +306,12 @@ function clearList(list){
 	}
 }
 
+//update tab count on the list header
+function updateListTitle(length){
+	var tabCount = document.getElementById('list-title');
+	tabCount.textContent = length.toString() + " Tabs";
+}
+
 function deleteItem(){
 	//console.log("DELETE " + this);
 	var li = this.parentNode;
@@ -314,6 +325,8 @@ function deleteItem(){
 
 //testing this function with deleteItem for delete animation
 function handleDelete(li){
+
+	console.log("Hello from handleDelete()");
 
 	//console.log(li);
 	var lastChild = li.lastElementChild;
@@ -329,18 +342,14 @@ function handleDelete(li){
 
 	//remove URL from the list
 	list.remove(url);
-	//clearStorage();
-	saveList();
+	updateListTitle(list.length)
+	chrome.storage.sync.clear(function(){
+		console.log("Storage cleared");
+		saveList(list);
+	})
 
-	//console.log("List after delete: " + JSON.stringify(list));
-
-	/* UNCOMMENT THIS!!
-	clearStorage();
-	saveList(list);
-	resetList();
-	displayList(list);
-	*/
-
+	//DELETE THESE DEBUGGING LATER
+	console.log("List after delete: " + JSON.stringify(list));
 }
 
 //clear extension storage

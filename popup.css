@@ -50,7 +50,13 @@ span {
 .button:active {
 	border: 2px solid;
 	box-shadow: 0px 0px 0px white, 0px 0px 0px black;
-	transform: translateX(5px) translateY(5px);
+	animation: click 0.1s linear;
+}
+
+@keyframes click {
+	100%{
+		transform: translateX(1px) translateY(1px);
+	}
 }
 
 #one-tab {

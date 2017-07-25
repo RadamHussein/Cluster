@@ -38,53 +38,76 @@ img {
 }
 
 #list-wrapper {
-	position: relative;
-	height: calc(100% - 100px);
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+	/*position: relative;*/
+	height: calc(100% - 120px);
+	padding: 10px;
 }
 
 .list-header {
 	position: relative;
 	width: 1044px;
+	height: 80px;
 	border: 2px solid black;
 	border-radius: 5px;
-	margin-left: 10px;
-	margin-right: 10px;
-	margin-top: 10px;
+	margin: auto;
 }
 
 span {
 	position: relative;
 	float: right;
 	right: 5%;
+	top: 2px;
 	margin-top: 31px;
 	color: #76FF03;
 	font-size: 14px;
 	cursor: pointer;
-	transition-property: all;
+	padding: 5px;
+	/*transition-property: all;
 	transition-duration: 0.3s;
 	transition-timing-function: initial;
-	transition-delay: initial;
+	transition-delay: initial;*/
 }
 
 span:hover {
-	color: red;
+	/*color: red;*/
+	animation: danger 0.3s linear infinite;
 }
+
+@keyframes danger {
+	0% {
+		border: 2px solid #ff2626;
+		background-color: white;
+		color: #ff2626;
+	}
+	50% {
+		border: 2px solid #ff2626;
+		background-color: white;
+		color: #ff2626;
+	}
+	51% {
+		border: 2px solid #ff2626;
+		background-color: #ff2626;
+		color: white;
+	}
+	100% {
+		border: 2px solid #ff2626;
+		background-color: #ff2626;
+		color: white;
+	}
+
+}
+
 
 #list-title {
 	position: relative;
 	left: 5%;
+	top: 2px;
 	font-size: 30px;
 	font-weight: 400;
 	display: inline-block;
 }
 
 ul {
-	/*position: relative;*/
 	width: 995px;
 	max-height: 65vh;
 	overflow: hidden;
@@ -92,7 +115,9 @@ ul {
 	padding-right: 50px;
 	border: 2px solid black;
 	border-radius: 5px;
-	margin: 10px;
+	margin: auto;
+	margin-top: 10px;
+	/*margin-bottom: 10px;*/
 }
 
 #tabs-list {
@@ -108,21 +133,22 @@ li {
 	transition: all 0.2s linear;
 }
 
-/*li::before {
-	background-color: red;
-}*/
-
-
 a {
 	position: absolute;
 	display: inline-block;
 	top: 2px;
-	/*max-width: 900px;*/
 	width: 90%;
 	color: black;
 	text-decoration:none;
 	line-height: 28px;
 	cursor: default;
+
+	/*These lines ensure the text does not wrap inside a*/
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+  max-height: 25px;
+  line-height: 27px;
 }
 
 li:hover {
@@ -174,6 +200,14 @@ li:hover {
 	display: none;
 }
 
+.delete-animation > .favicon {
+	display: none;
+}
+
+.delete-animation > .clear {
+	display: none;
+}
+
 @keyframes delete {
 	0%{
 		transform: scaleX(1.1);
@@ -185,7 +219,7 @@ li:hover {
 		background-color: lime;
 		opacity: 0.5
 	}
-	50% {
+	40% {
 		transform: scaleX(0.1) scaleY(0.1);
 		background-color: lime;
 		opacity: 0;
@@ -194,6 +228,11 @@ li:hover {
 		transform: scaleX(1) scaleY(0.1);
 		background-color: lime;
 		opacity: 1;
+	}
+	85% {
+		transform: scaleY(0);
+		background-color: lime;
+		opacity: 0.5;
 	}
 	100% {
 		transform: scaleY(0);
@@ -210,8 +249,6 @@ li:hover {
 /* Track */
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-		/*background-clip: content-box;*/
-		/*background-color: lime;*/
 }
 
 /* Handle */
@@ -222,4 +259,24 @@ li:hover {
 
 ::-webkit-scrollbar-thumb:window-inactive {
 	background: black;
+}
+
+@media (max-width: 1075px) {
+	.list-header {
+		width: 800px
+	}
+
+	ul {
+		width: 750px;
+	}
+}
+
+@media (max-width: 830px) {
+	.list-header {
+		width: 600px
+	}
+
+	ul {
+		width: 550px;
+	}
 }
