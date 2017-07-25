@@ -22,15 +22,11 @@ span {
 }
 
 .button {
-    /*background-color: #4CAF50; /* Green */
-    /*border: none;*/
     letter-spacing: 2px;
     font-weight: 400;
-    /*color: white;*/
     padding: 5px 5px;
     text-align: center;
     text-decoration: none;
-    /*transition-duration: 0.2s;*/
     display: block;
     float: center;
     margin: 5px;

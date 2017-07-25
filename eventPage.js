@@ -39,7 +39,6 @@ SinglyList.prototype.add = function(value) {
 
 SinglyList.prototype.remove = function(value) {
     var currentNode = this.head,
-        //length = this._length,
 				length = this.length,
         count = 0,
         message = {failure: 'Failure: non-existent node in this list.'},
@@ -47,15 +46,12 @@ SinglyList.prototype.remove = function(value) {
         nodeToDelete = null,
         deletedNode = null;
 
-        //console.log("Value: " + value);
-        //console.log(JSON.stringify(currentNode.data.url));
-        //console.log(currentNode.data.url);
-
 				//if there is only one node in the list delete that one
 				if (length == 1){
 					currentNode.next = null;
-					//this._length--;
+					currentNode = null;
 					this.length--;
+					return;
 				}
 				//there is more than one node
 				else{
@@ -78,7 +74,6 @@ SinglyList.prototype.remove = function(value) {
 						beforeNodeToDelete.next = null;
 						currentNode = null;
 						nodeToDelete = null;
-						//this._length--;
 						this.length--;
 						return;
 					}
@@ -88,7 +83,6 @@ SinglyList.prototype.remove = function(value) {
 				 		this.head = currentNode.next;
 				        deletedNode = currentNode;
 				        currentNode = null;
-				        //this._length--;
 								this.length--;
 
 				        //return deletedNode;
@@ -98,7 +92,6 @@ SinglyList.prototype.remove = function(value) {
 				    deletedNode = nodeToDelete;
 				    nodeToDelete = null;
 				    currentNode = null;
-				    //this._length--;
 						this.length--;
 
 				    //return deletedNode;
@@ -119,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		chrome.runtime.sendMessage({message: 'ok'}, function(response){
 				console.log("Callback called and logs a response of " + JSON.stringify(response[0]));
 				for (var i = 0; i < response.length; i++){
-					console.log("List item: ", response[i]);
+					//console.log("List item: ", response[i]);
 					list.add(response[i]);
 					addItemToPage(response[i]);
 				}
@@ -177,10 +170,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendRes) {
 			addItemToPage(message.message[i]);
 		}
 	}
-	updateListTitle(list.length);
-	//list.add(message.message);
-	//addItemToPage(message.message);
+	console.log("list length: " + JSON.stringify(list));
 	saveList(list);
+	updateListTitle(list.length);
 	sendRes({response: 'ok'})
 });
 
@@ -304,6 +296,7 @@ function clearList(list){
 	for (var member in list){
 		delete list[member];
 	}
+	list.length = 0;
 }
 
 //update tab count on the list header
@@ -313,14 +306,11 @@ function updateListTitle(length){
 }
 
 function deleteItem(){
-	//console.log("DELETE " + this);
 	var li = this.parentNode;
 
 	li.setAttribute("class", "delete-animation");
 
 	setTimeout(function(){ handleDelete(li) }, 600);
-	//setTimeout(function(){ handleDelete(li) }, 1000);
-
 }
 
 //testing this function with deleteItem for delete animation
@@ -340,16 +330,20 @@ function handleDelete(li){
 
 	//console.log("List before delete: ");
 
-	//remove URL from the list
-	list.remove(url);
+	if (list.length == 1){
+		clearList(list);
+	}
+	else {
+		//remove URL from the list
+		list.remove(url);
+		//DELETE THESE DEBUGGING LATER
+		console.log("List after delete: " + JSON.stringify(list));
+	}
+
 	updateListTitle(list.length)
 	chrome.storage.sync.clear(function(){
-		console.log("Storage cleared");
 		saveList(list);
 	})
-
-	//DELETE THESE DEBUGGING LATER
-	console.log("List after delete: " + JSON.stringify(list));
 }
 
 //clear extension storage
