@@ -174,7 +174,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendRes) {
 	}
 
 	for (var i = 0; i < messageLength; i++){
-		if(message.message[i].url != "chrome-extension://eknbadmpplffmkpecahajcjeencbieod/background.html"){
+		if(message.message[i].url != "chrome-extension://iccmdlfdjpflgmighodichgfcgiaoepo/background.html"){
 			list.add(message.message[i]);
 			addItemToPage(message.message[i]);
 		}

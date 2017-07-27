@@ -42,7 +42,7 @@ function checkForBackgroundTab(callback){
     var foundBackgroundTab = false;
     for (i = 0; i < tabs.length; i++){
       //console.log(tabs[i].url);
-      if (tabs[i].url == 'chrome-extension://eknbadmpplffmkpecahajcjeencbieod/background.html'){
+      if (tabs[i].url == 'chrome-extension://iccmdlfdjpflgmighodichgfcgiaoepo/background.html'){
         foundBackgroundTab = true;
       }
       //console.log(foundBackgroundTab);
@@ -93,7 +93,7 @@ function saveAndCloseAllTabs(){
 
     for (i = 0; i < allTabsInWindow.length; i++){
       //ignore the background page if it is open
-      if(allTabsInWindow[i].url == "chrome-extension://eknbadmpplffmkpecahajcjeencbieod/background.html"){
+      if(allTabsInWindow[i].url == "chrome-extension://iccmdlfdjpflgmighodichgfcgiaoepo/background.html"){
         backgroundTabIsOpen = true;
       }
       else{
