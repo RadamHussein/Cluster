@@ -109,42 +109,59 @@ document.addEventListener('DOMContentLoaded', function(){
 	//if page was not refreshed (is loaded with the new tab) send an "ok" the popup requesting the data
 	if (performance.navigation.type != 1){
 		console.log("Page was not refreshed...");
-		chrome.runtime.sendMessage({message: 'ok'}, function(response){
-				console.log("Callback called and logs a response of " + JSON.stringify(response[0]));
-				removeDefaultMessage();
-				for (var i = 0; i < response.length; i++){
-					//console.log("List item: ", response[i]);
-					list.add(response[i]);
-					addItemToPage(response[i]);
-				}
-				saveList(list);
-				updateListTitle(list.length);
-		});
+		var promise = new Promise(function(resolve, reject){
+			chrome.runtime.sendMessage({message:'ok'}, function(response){
+				resolve(response);
+			})
+		})
+		promise.then(function(response){
+			console.log("Callback called and logs a response of " + JSON.stringify(response[0]));
+			removeDefaultMessage();
+			for (var i = 0; i < response.length; i++){
+				list.add(response[i]);
+				addItemToPage(response[i]);
+			}
+			saveList(list);
+			updateListTitle(list.length);
+		})
 	}
+	//DELETE THIS ELSE
 	else {
 		console.log("Page was refreshed...");
 	}
 
 	//"clear all" button
 	var deleteAll = document.getElementById('delete');
-	deleteAll.addEventListener("click", function(){
+	listenForDeleteAll(deleteAll);
+});
+
+//handles action when "Clear All" button is clicked
+function listenForDeleteAll(deleteAll){
+	var promise = new Promise(function(resolve, reject){
+		deleteAll.addEventListener("click", function(){
+			resolve();
+		})
+	})
+	promise.then(function(){
 		clearList(list);
 		clearStorage();
 		resetList();
 		updateListTitle(0);
 		showDefaultMessage();
-	});
-});
+		console.log("Clear All");
+	})
+}
 
 //load contents of storage onto the page when background tab is opened or refreshed without adding new items
 function loadStorageContents(){
-	chrome.storage.sync.get(null, function(contents){
+	var promise = new Promise(function(resolve, reject){
+		chrome.storage.sync.get(null, function(contents){
+			resolve(contents);
+		});
+	});
+
+	promise.then(function(contents){
 		console.log(contents);
-		//console.log(contents.LinkedList.head);
-		/*if(typeof(contents.head) == "undefined" && typeof(contents.LinkedList.head) == "undefined"){
-			console.log("storage contents empty");
-		}*/
-		//console.log("length: " + list.length);
 		if(contents.hasOwnProperty('LinkedList') == false || contents.LinkedList.length == 0){
 			console.log("storage contents empty");
 			showDefaultMessage();
@@ -161,10 +178,13 @@ function loadStorageContents(){
 }
 
 //listen for additional messages from the popup page
-chrome.runtime.onMessage.addListener(function(message, sender, sendRes) {
-	//saveChanges(message.message)	//save the entry (uncomment later)
+var promise = new Promise(function(resolve, reject){
+	chrome.runtime.onMessage.addListener(function(message, sender, sendRes){
+		resolve(message);
+	});
+});
+promise.then(function(message){
 	var messageLength = message.message.length;
-	//console.log(message.message.length);
 	console.log(messageLength);
 	console.log(message.message);
 	console.log(message.message[0]);
@@ -184,6 +204,29 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendRes) {
 	updateListTitle(list.length);
 	sendRes({response: 'ok'})
 });
+
+//listen for additional messages from the popup page
+/*chrome.runtime.onMessage.addListener(function(message, sender, sendRes) {
+	var messageLength = message.message.length;
+	console.log(messageLength);
+	console.log(message.message);
+	console.log(message.message[0]);
+	console.log("List: " + JSON.stringify(list));
+	if(list.length == 0){
+		removeDefaultMessage();
+	}
+
+	for (var i = 0; i < messageLength; i++){
+		if(message.message[i].url != "chrome-extension://iccmdlfdjpflgmighodichgfcgiaoepo/background.html"){
+			list.add(message.message[i]);
+			addItemToPage(message.message[i]);
+		}
+	}
+	console.log("list length: " + JSON.stringify(list));
+	saveList(list);
+	updateListTitle(list.length);
+	sendRes({response: 'ok'})
+});*/
 
 /*
 This function adds an item to the DOM
@@ -288,11 +331,17 @@ function isStorageEmpty(){
 	}
 */
 
+//Saves list to storage
 function saveList(list){
-	chrome.storage.sync.set({'LinkedList': list}, function() {
-        // Notify that we saved.
-        console.log('saved');
-    });
+	var promise = new Promise(function(resolve, reject){
+		chrome.storage.sync.set({'LinkedList':list}, function(){
+			resolve();
+		});
+	});
+
+	promise.then(function(){
+		console.log('saved');
+	});
 }
 
 //clear out the data structure used to hold the list
@@ -310,11 +359,10 @@ function showDefaultMessage(){
 	defaultMessage.textContent = "Save tabs to add items to the list";
 
 	document.getElementById("tabs-list").setAttribute("class", "list");
-
 	document.getElementById("tabs-list").appendChild(defaultMessage);
 }
 
-//remove default message from the list
+//remove default message
 function removeDefaultMessage(){
 	var parent = document.getElementById("tabs-list");
 	var child = parent.lastElementChild;
@@ -328,24 +376,26 @@ function updateListTitle(length){
 	tabCount.textContent = length.toString() + " Tabs";
 }
 
+//handles delete animation;
 function deleteItem(){
 	var li = this.parentNode;
-
 	li.setAttribute("class", "delete-animation");
 
-	setTimeout(function(){ handleDelete(li) }, 600);
+	var promise = new Promise(function(resolve, reject){
+		setTimeout(function(){
+			resolve();
+		}, 600);
+	})
+	promise.then(function(){
+		handleDelete(li);
+	});
 }
 
-//testing this function with deleteItem for delete animation
+//removes an item from the data structure, updates the storage contents, and removes <li> from DOM
 function handleDelete(li){
-
-	console.log("Hello from handleDelete()");
-
-	//console.log(li);
+	//get the url from the <a> tag
 	var lastChild = li.lastElementChild;
-	//console.log(lastChild);
 	var url = lastChild.getAttribute("href");
-	//console.log(url);
 
 	//remove li from the DOM
 	var parent = document.getElementById("tabs-list");
@@ -365,14 +415,24 @@ function handleDelete(li){
 	}
 
 	updateListTitle(list.length)
-	chrome.storage.sync.clear(function(){
+	var promise = new Promise(function(resolve, reject){
+		chrome.storage.sync.clear(function(){
+			resolve();
+		})
+	})
+	promise.then(function(){
 		saveList(list);
 	})
 }
 
 //clear extension storage
 function clearStorage(){
-	chrome.storage.sync.clear(function(){
+	var promise = new Promise(function(resolve, reject){
+		chrome.storage.sync.clear(function(){
+			resolve();
+		})
+	})
+	promise.then(function(){
 		console.log("Storage cleared");
 	})
 }
