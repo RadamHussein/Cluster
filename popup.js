@@ -5,20 +5,21 @@
  *   is found.
  */
 function getCurrentTabUrl(callback) {
-  // Query filter to be passed to chrome.tabs.query - see
-  // https://developer.chrome.com/extensions/tabs#method-query
   var queryInfo = {
     active: true,
     currentWindow: true
   };
 
-  chrome.tabs.query(queryInfo, function(tabs) {
-    //var tab = tabs[0];
+  var promise = new Promise(function(resolve, reject){
+    chrome.tabs.query(queryInfo, function(tabs){
+      resolve(tabs);
+    });
+  });
+  promise.then(function(tabs){
     console.log(tabs);
     var url = tabs;
-
     callback(url);
-  });
+  })
 }
 
 //get the array of open tabs in the current window
@@ -27,10 +28,15 @@ function getAllTabUrls(callback){
     currentWindow: true
   };
 
-  chrome.tabs.query(queryInfo, function(tabs) {
+  var promise = new Promise(function(resolve, reject){
+    chrome.tabs.query(queryInfo, function(tabs){
+      resolve(tabs);
+    });
+  });
+  promise.then(function(tabs){
     var allTabsInWindow = tabs;
     callback(allTabsInWindow);
-  });
+  })
 }
 
 //Check for the existence of the extension's background tab
@@ -38,14 +44,18 @@ function checkForBackgroundTab(callback){
   var queryInfo = {
     currentWindow: true
   };
-  chrome.tabs.query(queryInfo, function(tabs){
+
+  var promise = new Promise(function(resolve, reject){
+    chrome.tabs.query(queryInfo, function(tabs){
+      resolve(tabs);
+    });
+  });
+  promise.then(function(tabs){
     var foundBackgroundTab = false;
     for (i = 0; i < tabs.length; i++){
-      //console.log(tabs[i].url);
       if (tabs[i].url == 'chrome-extension://iccmdlfdjpflgmighodichgfcgiaoepo/background.html'){
         foundBackgroundTab = true;
       }
-      //console.log(foundBackgroundTab);
     }
     callback(foundBackgroundTab);
   });
@@ -77,17 +87,26 @@ function openBackgroundPage(){
   }
 
   //look for open extension background page
+  var promise = new Promise(function(resolve, reject){
     checkForBackgroundTab(function(openBackgroundTab){
-      //if no open page found, open it
-      if (openBackgroundTab == false){
-        chrome.tabs.create(newTab);
-      }
+      resolve(openBackgroundTab);
     });
+  });
+  promise.then(function(openBackgroundTab){
+    if (openBackgroundTab == false){
+      chrome.tabs.create(newTab);
+    }
+  });
 }
 
 //package, close and send tab group to background
 function saveAndCloseAllTabs(){
-  getAllTabUrls(function(allTabsInWindow){
+  var promise = new Promise(function(resolve, reject){
+    getAllTabUrls(function(allTabsInWindow){
+      resolve(allTabsInWindow);
+    });
+  });
+  promise.then(function(allTabsInWindow){
     var backgroundTabIsOpen = false;
     var allOpenTabsArr = [];
 
@@ -97,7 +116,7 @@ function saveAndCloseAllTabs(){
         backgroundTabIsOpen = true;
       }
       else{
-        /*****UNCOMMENT WHEN READY TO CLOSE ALL OPEN TABS******/
+        //UNCOMMENT WHEN READY TO CLOSE ALL OPEN TABS
         //close the current tab
         //chrome.tabs.remove(allTabsInWindow[i].id);
 
@@ -124,19 +143,23 @@ function saveAndCloseAllTabs(){
       chrome.runtime.onMessage.addListener(function(message, sender, sendRes){
         console.log(message);
         console.log("Sending all tabs to background...");
-        //sendRes({response: allOpenTabsArr});
         sendRes(allOpenTabsArr);
       });
     }
     else{
       console.log("else...");
-      chrome.runtime.sendMessage({message: allOpenTabsArr}, function(response){
+      var promiseToSend = new Promise(function(resolve, reject){
+        chrome.runtime.sendMessage({message: allOpenTabsArr}, function(response){
+          resolve(response);
+        });
+      });
+      promiseToSend.then(function(response){
         console.log("response: " + response.response);
-      })
+      });
     }
     console.log(allOpenTabsArr);
   });
-}
+};
 
 document.addEventListener('DOMContentLoaded', handleUserAction);
 
@@ -158,10 +181,6 @@ function handleUserAction(){
         tabData.push(copyTabDataForSending(url[i]));
       }
 
-    //*****UNCOMMENT WHEN THINGS ARE FINISHED*****//
-    //close the captured tab
-    //chrome.tabs.remove(url[0].id);
-
     //configure new tab
     var newTab = {
       url: chrome.extension.getURL('background.html'),
@@ -173,21 +192,31 @@ function handleUserAction(){
     checkForBackgroundTab(function(openBackgroundTab){
       //if no open page found, open it
       if (openBackgroundTab == false){
-        chrome.tabs.create(newTab);
+        //chrome.tabs.create(newTab);
         chrome.runtime.onMessage.addListener(function(message, sender, sendRes){
           console.log(message);
           sendRes(tabData);
+          return true;
         });
+        chrome.tabs.create(newTab);
       }
         sendMessage(tabData);
       })
+      //*****UNCOMMENT WHEN THINGS ARE FINISHED*****//
+      //close the captured tab
+      //chrome.tabs.remove(url[0].id);
     });
   })
 };
 
 function sendMessage(data){
   console.log("Sending data to background...");
-  chrome.runtime.sendMessage({message: data}, function(response){
+  var promise = new Promise(function(resolve, reject){
+    chrome.runtime.sendMessage({message: data}, function(response){
+      resolve(response);
+    });
+  });
+  promise.then(function(response){
     console.log("response: " + response.response);
-  })
+  });
 }

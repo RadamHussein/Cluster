@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	loadStorageContents();
 
 	//if page was not refreshed (is loaded with the new tab) send an "ok" the popup requesting the data
-	if (performance.navigation.type != 1){
+	/*if (performance.navigation.type != 1){
 		console.log("Page was not refreshed...");
 		var promise = new Promise(function(resolve, reject){
 			chrome.runtime.sendMessage({message:'ok'}, function(response){
@@ -126,6 +126,24 @@ document.addEventListener('DOMContentLoaded', function(){
 		})
 	}
 	//DELETE THIS ELSE
+	else {
+		console.log("Page was refreshed...");
+	}*/
+	//if page was not refreshed (is loaded with the new tab) send an "ok" the popup requesting the data
+	if (performance.navigation.type != 1){
+		console.log("Page was not refreshed...");
+		chrome.runtime.sendMessage({message: 'ok'}, function(response){
+				console.log("Callback called and logs a response of " + JSON.stringify(response[0]));
+				removeDefaultMessage();
+				for (var i = 0; i < response.length; i++){
+					//console.log("List item: ", response[i]);
+					list.add(response[i]);
+					addItemToPage(response[i]);
+				}
+				saveList(list);
+				updateListTitle(list.length);
+		});
+	}
 	else {
 		console.log("Page was refreshed...");
 	}
@@ -153,7 +171,7 @@ function listenForDeleteAll(deleteAll){
 }
 
 //load contents of storage onto the page when background tab is opened or refreshed without adding new items
-function loadStorageContents(){
+/*function loadStorageContents(){
 	var promise = new Promise(function(resolve, reject){
 		chrome.storage.sync.get(null, function(contents){
 			resolve(contents);
@@ -162,6 +180,27 @@ function loadStorageContents(){
 
 	promise.then(function(contents){
 		console.log(contents);
+		if(contents.hasOwnProperty('LinkedList') == false || contents.LinkedList.length == 0){
+			console.log("storage contents empty");
+			showDefaultMessage();
+		}
+		else{
+			console.log("Storage contains data");
+			console.log(contents.LinkedList)
+			convertStorageToList(contents.LinkedList);
+			console.log(list);
+			displayList(list);
+			updateListTitle(list.length);
+		}
+	})
+}*/
+
+//load contents of storage onto the page when background tab is opened or refreshed without adding new items
+function loadStorageContents(){
+	chrome.storage.sync.get(null, function(contents){
+		console.log(contents);
+		//console.log(contents.LinkedList.head);
+		//console.log("length: " + list.length);
 		if(contents.hasOwnProperty('LinkedList') == false || contents.LinkedList.length == 0){
 			console.log("storage contents empty");
 			showDefaultMessage();
