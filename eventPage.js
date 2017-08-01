@@ -130,23 +130,6 @@ document.addEventListener('DOMContentLoaded', function(){
 		console.log("Page was refreshed...");
 	}*/
 	//if page was not refreshed (is loaded with the new tab) send an "ok" the popup requesting the data
-	if (performance.navigation.type != 1){
-		console.log("Page was not refreshed...");
-		chrome.runtime.sendMessage({message: 'ok'}, function(response){
-				console.log("Callback called and logs a response of " + JSON.stringify(response[0]));
-				removeDefaultMessage();
-				for (var i = 0; i < response.length; i++){
-					//console.log("List item: ", response[i]);
-					list.add(response[i]);
-					addItemToPage(response[i]);
-				}
-				saveList(list);
-				updateListTitle(list.length);
-		});
-	}
-	else {
-		console.log("Page was refreshed...");
-	}
 
 	//"clear all" button
 	var deleteAll = document.getElementById('delete');
@@ -168,6 +151,32 @@ function listenForDeleteAll(deleteAll){
 		showDefaultMessage();
 		console.log("Clear All");
 	})
+}
+
+function sendMessageToFrontEnd(){
+	if (performance.navigation.type != 1){
+		console.log("Page was not refreshed...");
+		chrome.runtime.sendMessage({message: 'ok'}, function(response){
+				console.log("Callback called and logs a response of " + JSON.stringify(response[0]));
+				//console.log("Current list: " + JSON.stringify(list));
+
+				if(list.length == 0){
+					removeDefaultMessage();
+				}
+
+				for (var i = 0; i < response.length; i++){
+					list.add(response[i]);
+					//console.log("adding... " + JSON.stringify(response[i]));
+					addItemToPage(response[i]);
+				}
+				//console.log("List after add: " + JSON.stringify(list));
+				saveList(list);
+				updateListTitle(list.length);
+		});
+	}
+	else {
+		console.log("Page was refreshed...");
+	}
 }
 
 //load contents of storage onto the page when background tab is opened or refreshed without adding new items
@@ -199,8 +208,6 @@ function listenForDeleteAll(deleteAll){
 function loadStorageContents(){
 	chrome.storage.sync.get(null, function(contents){
 		console.log(contents);
-		//console.log(contents.LinkedList.head);
-		//console.log("length: " + list.length);
 		if(contents.hasOwnProperty('LinkedList') == false || contents.LinkedList.length == 0){
 			console.log("storage contents empty");
 			showDefaultMessage();
@@ -213,6 +220,7 @@ function loadStorageContents(){
 			displayList(list);
 			updateListTitle(list.length);
 		}
+		sendMessageToFrontEnd();
 	})
 }
 
